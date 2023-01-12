@@ -1,0 +1,111 @@
+load "utils.magma";
+
+// Try to infer the structure of a generic group
+
+// =================
+// Parameters choice
+// =================
+p := 3;
+k := 4;
+e := 2; // q = p^e - not tested for e > 1
+
+n_curves := 100; // Number of random curves to test
+n_points := 50; // Number of points to try for each curve
+
+verb := true; // Print extra information - curve choice,...
+sample_points := 5; // Number of sample points to save for each order
+target_order := 9; // If != 0 shows verb info only if the curve has target detected order
+H := 3; // Highest power of p expected as order
+
+// ====
+// Code
+// ====
+
+// Base ring definition
+q := p^e;
+Fq<gamma> := GF(q);
+F<eps> := PolynomialRing(Fq);
+I := ideal<F | eps^k>;
+Rk<eps> := F/I;
+
+// Compute highest element order for different curves 
+for i in [1..n_curves] do
+	
+	E := RandomCurve(Rk);
+	//E := [Rk!6, Rk!2]; // Fixed curve
+	
+
+	P := [Rk!0,Rk!1,Rk!0];
+
+	fake_point := [eps, 0, 0];
+	lifts := { fake_point };
+	for i in [1..n_points] do 
+		Include(~lifts, RandomLift(P, E, k));
+	end for;
+	Exclude(~lifts, [eps, 0, 0]);
+
+	max_order := 1;
+
+	if verb then
+		// Extra statistics
+		pnt_count := [0 : i in [1..H]];
+		pnt_samp := [ [] : i in [1..H]];
+	end if;
+
+	for pnt in lifts do 
+		ord_exp := 0;
+		Q := pnt;
+		while true do
+			if Q eq [0,1,0] then
+				if ord_exp eq 0 then break; end if;
+
+				ord := p^ord_exp;
+				max_order := Max(max_order, ord);
+
+				if verb then
+					// Counting number of points for each order
+					pnt_count[ord_exp] +:= 1;
+					
+					// Saving sample points
+					if #pnt_samp[ord_exp] lt sample_points then
+						Append(~pnt_samp[ord_exp], pnt);
+					end if;
+				end if;
+
+				break;
+			end if; 
+			Q := mul(Q, p, E);
+			ord_exp +:= 1;
+		end while;
+	end for;
+
+	if verb and target_order in [0, max_order] then
+		printf "========================================\ni = %o - Max Order: %o\n========================================\n", i, max_order; 
+		print "E:", E;
+		print "----------";
+		printf "Orders found: ";
+		for j in [1..H] do
+			printf "%o -> %o | ", p^j, pnt_count[j];
+		end for;
+		printf "\n";
+		print "----------";
+		print "Sample points (x coord):";
+		for j in [1..H] do
+			printf "Order %o:\n", p^j;
+			for pnt in pnt_samp[j] do 
+				// Point orbit
+				printf " - %o\n", pnt[1];
+				for k in [2..j] do 
+					printf "    --> %o\n", mul(pnt, p^(k-1), E)[1];
+				end for;
+			end for;
+		end for;
+		print "========================================";
+	else
+		printf "(%o) Found order %o\n", i, max_order;
+	end if;
+
+
+	
+
+end for;

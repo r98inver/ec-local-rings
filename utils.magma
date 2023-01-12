@@ -1,0 +1,596 @@
+
+function poly1(X1,Y1,Z1, X2,Y2,Z2, a1,a2,a3,a4,a6)
+	xx := X1*X2;
+	yy := Y1*Y2;
+	zz := Z1*Z2;
+
+	xyp := X1*Y2 + X2*Y1;
+	xym := X1*Y2 - X2*Y1;
+	xzp := X1*Z2 + X2*Z1;
+	xzm := X1*Z2 - X2*Z1;
+	yzp := Y1*Z2 + Y2*Z1;
+	yzm := Y1*Z2 - Y2*Z1;
+
+
+	X3_1 := xym*yzp + xzm*yy
+		+ a1*xx*yzm + a1*xym*xzp
+		- a2*xx*xzm + a3*xym*zz
+		+ a3*xzm*(Y1*Z2 + Y2*Z1)
+		- a4*xzp*xzm
+		- 3*a6*xzm*zz;
+	
+	Y3_1 := -3*xx*xym
+		- yy*yzm-2*a1*xzm*yy
+		+ (a1^2 + 3*a2)*xx*yzm
+		- (a1^2 + a2)*xyp*xzm
+		+ (a1*a2 - 3*a3)*xx*xzm
+		- (2*a1*a3 + a4)*xym*zz
+		+ a4*xzp*yzm
+		+ (a1*a4 - a2*a3)*xzp*xzm
+		+ (a3^2 + 3*a6)*yzm*zz
+		+ (3*a1*a6 - a3*a4)*xzm*zz;
+
+	Z3_1 := 3*xx*xzm - yzp*yzm
+		+ a1*xym*zz - a1*xzm*yzp
+		+ a2*xzp*xzm - a3*yzm*zz
+		+ a4*xzm*zz;
+	
+	return [X3_1, Y3_1, Z3_1];
+end function;
+	
+function poly2(X1,Y1,Z1, X2,Y2,Z2, a1,a2,a3,a4,a6)
+	xx := X1*X2;
+	yy := Y1*Y2;
+	zz := Z1*Z2;
+
+	xyp := X1*Y2 + X2*Y1;
+	xym := X1*Y2 - X2*Y1;
+	xzp := X1*Z2 + X2*Z1;
+	xzm := X1*Z2 - X2*Z1;
+	yzp := Y1*Z2 + Y2*Z1;
+	yzm := Y1*Z2 - Y2*Z1;
+
+	X3_2 := yy*xyp + a1*(2*X1*Y2 + X2*Y1)*(X2*Y1) + a1^2*(X1*X2^2*Y1)
+		- a2*xx*xyp - a1*a2*xx^2 + a3*(X2*Y1)*(Y1*Z2 + 2*Y2*Z1)
+		+ a1*a3*xx*yzm - a1*a3*xyp*xzm
+		- a4*xx*yzp - a4*xyp*xzp
+		- a1^2*a3*(X1^2*X2*Z2) - a1*a4*xx*(2*X1*Z2 + X2*Z1)
+		- a2*a3*X1*X2^2*Z1 - a3^2*X1*Z2*(2*Y2*Z1 + Y1*Z2)
+		- 3*a6*xyp*zz
+		- 3*a6*xzp*yzp - a1*a3^2*X1*Z2*(X1*Z2 + 2*X2*Z1)
+		- 3*a1*a6*X1*Z2*(X1*Z2 + 2*X2*Z1) + a3*a4*(-2*X1*Z2 - X2*Z1)*(X2*Z1)
+		- (a1^2*a6 - a1*a3*a4 + a2*a3^2 + 4*a2*a6 - a4^2)*yzp*zz
+		- (a1^3*a6 - a1^2*a3*a4 + a1*a2*a3^2 + 4*a1*a2*a6 - a1*a4^2)*(X1*Z1*Z2^2)
+		- a3^3*xzp*zz - 3*a3*a6*(xzp + X2*Z1)*zz
+		- (a1^2*a3*a6 - a1*a3^2*a4 + a2*a3^3 + 4*a2*a3*a6 - a3*a4^2)*zz^2;
+	Y3_2 := yy^2 + a1*X2*Y1^2*Y2 + (a1*a2 - 3*a3)*(X1*X2^2*Y1)
+		+ a3*(Y1^2*Y2*Z2) - (a2^2 - 3*a4)*xx^2
+		+ (a1*a4 - a2*a3)*(xzp + X1*Z2)*(X2*Y1)
+		+ (a1^2*a4 - 2*a1*a2*a3 + 3*a3^2)*(X1^2*X2*Z2)
+		- (a2*a4 - 9*a6)*xx*xzp
+		+ (3*a1*a6 - a3*a4)*(xzp + X2*Z1)*(Y1*Z2)
+		+ (3*a1^2*a6 - 2*a1*a3*a4 + a2*a3^2 + 3*a2*a6 - a4^2)*(X1*Z2)*(xzp + X2*Z1)
+		- (3*a2*a6 - a4^2)*(-2*X1*Z2 - X2*Z1)*X2*Z1
+		+ (a1^3*a6 - a1^2*a3*a4 + a1*a2*a3^2 - a1*a4^2 + 4*a1*a2*a6 - a3^3 - 3*a3*a6)*(Y1*Z1*Z2^2)
+		+ (a1^4*a6 - a1^3*a3*a4 + 5*a1^2*a2*a6 + a1^2*a2*a3^2 - a1*a2*a3*a4 - a1*a3^3 - 3*a1*a3*a6
+		- a1^2*a4^2 + a2^2*a3^2 - a2*a4^2 + 4*a2^2*a6 - a3^2*a4 - 3*a4*a6)*(X1*Z1*Z2^2)
+		+ (a1^2*a2*a6 - a1*a2*a3*a4 + 3*a1*a3*a6 + a2^2*a3^2 - a2*a4^2
+		+ 4*a2^2*a6 - 2*a3^2*a4 - 3*a4*a6)*(X2*Z1^2*Z2)
+		+ (a1^3*a3*a6 - a1^2*a3^2*a4 + a1^2*a4*a6 + a1*a2*a3^3
+		+ 4*a1*a2*a3*a6 - 2*a1*a3*a4^2 + a2*a3^2*a4
+		+ 4*a2*a4*a6 - a3^4 - 6*a3^2*a6 - a4^3 - 9*a6^2)*zz^2;
+	Z3_2 := 3*xx*xyp + yy*yzp + 3*a1*xx^2
+		+ a1*(xyp + X1*Y2)*Y1*Z2 + a1^2*X1*Z2*(xyp + X2*Y1)
+		+ a2*xx*yzp
+		+ a2*xyp*xzp
+		+ a1^3*X1^2*X2*Z2 + a1*a2*xx*(2*X1*Z2 + X2*Z1)
+		+ 3*a3*X1*X2^2*Z1 + a3*Y1*Z2*(yzp + Y2*Z1)
+		+ 2*a1*a3*X1*Z2*yzp
+		+ 2*a1*a3*(X2*Y1*zz) + a4*xyp*zz
+		+ a4*xzp*yzp
+		+ (a1^2*a3 + a1*a4)*X1*Z2*(xzp + X2*Z1) + a2*a3*X2*Z1*(xzp + X1*Z2)
+		+ a3^2*Y1*Z1*Z2^2 + (a3^2 + 3*a6)*yzp*zz
+		+ a1*a3^2*(xzp + X1*Z2)*zz + 3*a1*a6*X1*Z1*Z2^2
+		+ a3*a4*(X1*Z2 + 2*X2*Z1)*zz + (a3^3 + 3*a3*a6)*zz^2;
+
+	return [X3_2, Y3_2, Z3_2];
+end function;
+
+/*
+function poly3(X1,Y1,Z1, X2,Y2,Z2, a1,a2,a3,a4,a6)
+	xx := X1*X2;
+	yy := Y1*Y2;
+	zz := Z1*Z2;
+
+	xyp := X1*Y2 + X2*Y1;
+	xym := X1*Y2 - X2*Y1;
+	xzp := X1*Z2 + X2*Z1;
+	xzm := X1*Z2 - X2*Z1;
+	yzp := Y1*Z2 + Y2*Z1;
+	yzm := Y1*Z2 - Y2*Z1;
+
+	X3_3 := xyp*xym + a1*xx*xym
+		- a3*xx*yzm + a3*xyp*xzm
+		+ (a1*a3 + a4)*xx*xzm
+		+ (a3^2+3*a6)*xzp*xzm
+		+ (a1^2*a6 - a1*a3*a4 + a2*a3^2 + 4*a2*a6 - a4^2)*xzm*zz;
+
+	Y3_3 := xym*yy + a2*xx*xym
+		+ 2*a3*xzm*yy
+		- (a1*a3 + 3*a4)*xx*yzm
+		+ (a1*a3 + a4)*xyp*xzm
+		- (a1*a4 - a2*a3)*xx*xzm
+		+ (2*a3^2 + 3*a6)*xym*zz
+		- 3*a6*xzp*yzm
+		- (3*a1*a6 - a3*a4)*xzp*xzm
+		- (a1^2*a6 - a1*a3*a4 + a2*a3^2 + 4*a2*a6 - a4^2)*yzm*zz
+		- (a1^3*a6 - a1^2*a3*a4 + a1*a2*a3^2 + 4*a1*a2*a6
+		- a1*a4^2 - a3^3 - 3*a3*a6)*xzm*zz;
+
+	Z3_3 := - xyp*yzm - xzm*yy
+		- a1*xx*yzm - a1*xyp*xzm
+		- (a1^2 + a2)*xx*xzm - a3*xym*zz
+		- a3*xzp*yzm
+		- (a1*a3 + a4)*xzp*xzm
+		- (a3^2 + 3*a6)*xzm*zz;
+	return [X3_3, Y3_3, Z3_3];
+end function;
+*/
+
+function SF(P)
+	// ======================
+	// P: a sequence [x,y,z] with components in a ring R
+	//
+	// Returns: standard projective form of P or [0,0,0]
+	// ======================
+	if IsInvertible(P[3]) then return [(P[3]^(-1))*P[i] : i in [1..3]];
+	elif IsInvertible(P[2]) then return [(P[2]^(-1))*P[i] : i in [1..3]];
+	elif IsInvertible(P[1]) then return [(P[1]^(-1))*P[i] : i in [1..3]];
+	else return [0,0,0]; end if;
+end function;
+
+function add(P1, P2, E)
+	// ======================
+	// P1, P2: points on E (generic tuples with three elements)
+	// E: two or five coefficients in a ring R defining the curve
+	//
+	// Returns: a point (P1+P2) in standar projective form
+	// ======================
+	
+	R := Parent(E[1]);
+	
+	// Coefficients of E
+	assert #E eq 5 or #E eq 2;
+	if #E eq 2 then
+		a1 := R!0; a2 := R!0; a3 := R!0; a4 := E[1]; a6 := R!E[2];
+	else
+		a1 := R!E[1]; a2 := R!E[2]; a3 := R!E[3]; a4 := R!E[4]; a6 := R!E[5];
+	end if;
+
+	// Casting points coefficients
+	X1 := R!P1[1]; Y1 := R!P1[2]; Z1 := R!P1[3];
+	X2 := R!P2[1]; Y2 := R!P2[2]; Z2 := R!P2[3];
+
+	// Second polynomial
+	P3_2 := poly2(X1,Y1,Z1, X2,Y2,Z2, a1,a2,a3,a4,a6);
+	P3_2 := SF(P3_2);
+	if P3_2 ne [0,0,0] then return P3_2; end if;
+
+	// First polynomial
+	P3_1 := poly1(X1,Y1,Z1, X2,Y2,Z2, a1,a2,a3,a4,a6);
+	return SF(P3_1);
+		
+end function;
+
+function neg(P, E)
+	// Point negation
+	R := Parent(E[1]);
+	// Coefficients of E
+	assert #E eq 5 or #E eq 2;
+	if #E eq 2 then
+		a1 := R!0; a3 := R!0;
+	else
+		a1 := R!E[1]; a3 := R!E[3];
+	end if;
+	Q := [P[1], -P[2] -a1*P[1] -a3*P[3], P[3]];
+	return SF(Q);
+end function; 
+
+function mul(P, n, E)
+	// Simple double and add
+	Q := [0,1,0];
+	negative := false;
+	if n lt 0 then
+		n := -n;
+		negative := true;
+	end if;
+	for i in Reverse(Intseq(n, 2)) do
+		Q := add(Q, Q, E);
+		if i eq 1 then
+			Q := add(Q, P, E);
+		end if;
+	end for;
+	if negative then
+		Q := neg(Q, E);
+	end if;
+	return SF(Q);
+end function;
+
+function IsEC(E)
+	// ======================
+	// E: two or five coefficients in a ring R defining the curve
+	//
+	// Returns: whether E represents an elliptic curve
+	// ======================
+	R := Parent(E[1]);
+
+	// Coefficients of E
+	assert #E eq 5 or #E eq 2;
+	if #E eq 2 then
+		a1 := R!0; a2 := R!0; a3 := R!0; a4 := E[1]; a6 := R!E[2];
+	else
+		a1 := R!E[1]; a2 := R!E[2]; a3 := R!E[3]; a4 := R!E[4]; a6 := R!E[5];
+	end if;
+
+	b2 := a1^2 + 4*a2;
+	b4 := 2*a4 + a1*a3;
+	b6 := a3^2 + 4*a6;
+	b8 := a1^2*a6 + 4*a2*a6 - a1*a3*a4 + a2*a3^2 - a4^2;
+
+	dt := -b2^2*b8 - 8*b4^3 - 27*b6^2 + 9*b2*b4*b6;
+	res, inv := IsInvertible(dt);
+	return res;
+end function;
+
+function IsOn(P, E)
+	// ======================
+	// E: two or five coefficients in a ring R defining the curve
+	// P: a generic point
+	//
+	// Returns: whether P is on E
+	// ======================
+	R := Parent(E[1]);
+
+	// Coefficients of E
+	assert #E eq 5 or #E eq 2;
+	if #E eq 2 then
+		a1 := R!0; a2 := R!0; a3 := R!0; a4 := E[1]; a6 := E[2];
+	else
+		a1 := E[1]; a2 := E[2]; a3 := E[3]; a4 := E[4]; a6 := E[5];
+	end if;
+
+	x := R!Coefficients(P[1]);
+	y := R!Coefficients(P[2]);
+	z := R!Coefficients(P[3]);
+	
+	final_eq := y^2*z + a1*x*y*z + a3*y*z^2 - x^3 - a2*x^2*z - a4*x*z^2 - a6*z^3;
+	return final_eq eq 0;
+
+end function;
+
+function RandomCurve(R)
+	// ======================
+	// R: a ring
+	//
+	// Returns: a random elliptic curve E over R
+	// ======================
+	while true do 
+		E := [Random(R) : i in [1..5]];
+		if not IsEC(E) then continue; end if; // dt is not invertible
+		return E;
+	end while;
+end function;
+
+function hasLift(P, E, g)
+	// ======================
+	// P: point lifted up to g-1 (if g eq 2 P is on Fp)
+	// E: curve
+	// g: >= 2, order of the lift (Fp[X]/X^g-1 -->> Fp[X]/X^g)
+	//
+	// Returns:
+	//	- if a lift is not found: false, false
+	//	- else: true, P where P is the lift
+	// ======================
+	R := Parent(E[1]);
+	F := BaseField(R);
+	Fe<eps> := PolynomialRing(F);
+	I := ideal<Fe | eps^g>;
+	Fk := Fe/I; // Fp[X]/X^g - where we are lifting the point
+	EqR<Z> := PolynomialRing(Fk); // Adding a variable for Z
+
+	m := map < Fe -> Fk | eps :-> eps>; // Quotient map
+	
+	// Casting coefficients
+	assert #E eq 5 or #E eq 2;
+	if #E eq 2 then
+		a1 := Fk!0; a2 := Fk!0; a3 := Fk!0; a4 := m(Fe!E[1]); a6 := m(Fe!E[2]);
+	else
+		a1 := m(Fe!E[1]); a2 := m(Fe!E[2]); a3 := m(Fe!E[3]); a4 := m(Fe!E[4]); a6 := m(Fe!E[5]);
+	end if;
+
+	// Adding random components to the point
+	if g eq 2 then
+		// Components of P are in Fp
+		px := Fk!(P[1] + Random(F)*eps^(g-1));
+		py := Fk!(P[2] + Random(F)*eps^(g-1));
+		pz := EqR!(P[3] + Z * Fk.1^(g-1));
+	else
+		// Components of P are in Fp[X]/X^g-1
+		px := Fk!(Coefficients(P[1])) + Fk!(Random(F)*eps^(g-1));
+		py := Fk!(Coefficients(P[2])) + Fk!(Random(F)*eps^(g-1));
+		pz := EqR!( Fk!(Coefficients(P[3])) + Z * Fk.1^(g-1));
+	end if;	
+
+	// Solving the curve equation for Z
+	f := py^2*pz + a1*px*py*pz + a3*py*pz^2 - px^3 - a2*px^2*pz - a4*px*pz^2 - a6*pz^3;
+	
+	// Check only the component with eps^(g-1) is left
+	check, f := IsDivisibleBy(f, Fk.1^(g-1));
+	if not check then
+		// Lower point was not on the curve
+		//print "Lower point was not on the curve";
+		return false, false;
+	end if;
+	coeff := Coefficients(f);
+	if not #coeff eq 2 then
+		// All/no solutions for Z with randomly picked X and Y
+		//print "All/no solutions for Z with randomly picked X and Y";
+		return false, false;
+	end if;
+
+	// Go back to F[X]
+	f := Fe!coeff;
+	cZ := Roots(f);
+	if g eq 2 then
+		// Components of P are in Fp
+		pz := Fk!(P[3] + cZ[1][1]*eps^(g-1));
+	else
+		// Components of P are in Fp[X]/X^g-1
+		pz := Fk!(Coefficients(P[3])) + Fk!(cZ[1][1]*eps^(g-1));
+	end if;	
+	return true, [px, py, pz];
+	
+end function;
+
+function RandomEPoint(E, k)
+	// ======================
+	// E: two or five coefficients in a ring R defining the curve (R.1 must be \eps)
+	// k: order of X in Rk
+	//
+	// Returns: a random point of E
+	// ======================
+
+	R := Parent(E[1]);
+	
+	// Coefficients of E
+	assert #E eq 5 or #E eq 2;
+	if #E eq 2 then
+		a1 := R!0; a2 := R!0; a3 := R!0; a4 := E[1]; a6 := E[2];
+	else
+		a1 := E[1]; a2 := E[2]; a3 := E[3]; a4 := E[4]; a6 := E[5];
+	end if;
+
+	// Base field point
+	F := BaseField(R);
+	cff := [F | Coefficients(c)[1]: c in E];
+	Ef := EllipticCurve(cff);
+	
+	found := false;
+	while not found do
+		found := true;
+		P := Random(Ef); // Start from a new point
+		
+		for i in [2..k] do 
+			// For every i we lift p from F[X]/X^(i-1) -->> F[X]/X^i
+			check, P := hasLift(P, E, i);
+
+			// Check if lift worked
+			if not check then 
+				//print "Fail!";
+				found := false;
+				break;
+			end if;
+		end for;
+	end while;
+
+	// Map P back to R_k
+	mp := hom< Parent(P[1]) -> R | R.1 >;
+	P := [mp(i) : i in P];
+	
+	return SF(P);
+
+
+end function;
+
+
+function RandomLift(P, E, k)
+	// ======================
+	// P: a point in Fp to be lifted
+	// E: two or five coefficients in a ring R defining the curve (R.1 must be \eps)
+	// k: order of X in Rk
+	//
+	// Returns: a random lift of P (like RandomEPoint)
+	// ======================
+
+	R := Parent(E[1]);
+	
+	// Coefficients of E
+	assert #E eq 5 or #E eq 2;
+	if #E eq 2 then
+		a1 := R!0; a2 := R!0; a3 := R!0; a4 := E[1]; a6 := E[2];
+	else
+		a1 := E[1]; a2 := E[2]; a3 := E[3]; a4 := E[4]; a6 := E[5];
+	end if;
+
+	// Base field point
+	F := BaseField(R);
+	function parseE(c)
+		if c in F then return F!c; end if;
+		return F!Coefficients(c)[1];
+	end function;
+	cff := [parseE(c) : c in E];
+	
+	Ef := EllipticCurve(cff);
+	
+	found := false;
+	while not found do
+		found := true;
+		P := Ef!P;
+		
+		for i in [2..k] do 
+			check, P := hasLift(P, E, i);
+
+			if not check then 
+				found := false;
+				break;
+			end if;
+		end for;
+	end while;
+	
+	mp := hom< Parent(P[1]) -> R | R.1 >;
+	P := [mp(i) : i in P];
+	return SF(P);
+
+end function;
+
+function formalAdd(P, Q)
+	//R<a1, a2, a3, a4, a6, X> := PolynomialRing(Integers(), 8);
+	//I := ideal<R | X^k>;
+	//Rk := R/I;
+	
+	Rk := Parent(P[1]);
+	
+	a1 := Rk.1; a2 := Rk.2; a3 := Rk.3; a4 := Rk.4; a6 := Rk.5;
+	X := Rk.6;
+
+	X1 := Rk!P[1]; Y1 := Rk!P[2]; Z1 := Rk!P[3];
+	X2 := Rk!Q[1]; Y2 := Rk!Q[2]; Z2 := Rk!Q[3];
+
+	xx := X1*X2;
+	yy := Y1*Y2;
+	zz := Z1*Z2;
+
+	xyp := X1*Y2 + X2*Y1;
+	xym := X1*Y2 - X2*Y1;
+	xzp := X1*Z2 + X2*Z1;
+	xzm := X1*Z2 - X2*Z1;
+	yzp := Y1*Z2 + Y2*Z1;
+	yzm := Y1*Z2 - Y2*Z1;
+
+	X3_2 := yy*xyp + Rk!a1*(2*X1*Y2 + X2*Y1)*(X2*Y1) + Rk!a1^2*(X1*X2^2*Y1)
+		- Rk!a2*xx*xyp - Rk!a1*Rk!a2*xx^2 + Rk!a3*(X2*Y1)*(Y1*Z2 + 2*Y2*Z1)
+		+ Rk!a1*Rk!a3*xx*yzm - Rk!a1*Rk!a3*xyp*xzm
+		- Rk!a4*xx*yzp - Rk!a4*xyp*xzp
+		- Rk!a1^2*Rk!a3*(X1^2*X2*Z2) - Rk!a1*Rk!a4*xx*(2*X1*Z2 + X2*Z1)
+		- Rk!a2*Rk!a3*X1*X2^2*Z1 - Rk!a3^2*X1*Z2*(2*Y2*Z1 + Y1*Z2)
+		- 3*Rk!a6*xyp*zz
+		- 3*Rk!a6*xzp*yzp - Rk!a1*Rk!a3^2*X1*Z2*(X1*Z2 + 2*X2*Z1)
+		- 3*Rk!a1*Rk!a6*X1*Z2*(X1*Z2 + 2*X2*Z1) + Rk!a3*Rk!a4*(-2*X1*Z2 - X2*Z1)*(X2*Z1)
+		- (Rk!a1^2*Rk!a6 - Rk!a1*Rk!a3*Rk!a4 + Rk!a2*Rk!a3^2 + 4*Rk!a2*Rk!a6 - Rk!a4^2)*yzp*zz
+		- (Rk!a1^3*Rk!a6 - Rk!a1^2*Rk!a3*Rk!a4 + Rk!a1*Rk!a2*Rk!a3^2 + 4*Rk!a1*Rk!a2*Rk!a6 - Rk!a1*Rk!a4^2)*(X1*Z1*Z2^2)
+		- Rk!a3^3*xzp*zz - 3*Rk!a3*Rk!a6*(xzp + X2*Z1)*zz
+		- (Rk!a1^2*Rk!a3*Rk!a6 - Rk!a1*Rk!a3^2*Rk!a4 + Rk!a2*Rk!a3^3 + 4*Rk!a2*Rk!a3*Rk!a6 - Rk!a3*Rk!a4^2)*zz^2;
+	Y3_2 := yy^2 + Rk!a1*X2*Y1^2*Y2 + (Rk!a1*Rk!a2 - 3*Rk!a3)*(X1*X2^2*Y1)
+		+ Rk!a3*(Y1^2*Y2*Z2) - (Rk!a2^2 - 3*Rk!a4)*xx^2
+		+ (Rk!a1*Rk!a4 - Rk!a2*Rk!a3)*(xzp + X1*Z2)*(X2*Y1)
+		+ (Rk!a1^2*Rk!a4 - 2*Rk!a1*Rk!a2*Rk!a3 + 3*Rk!a3^2)*(X1^2*X2*Z2)
+		- (Rk!a2*Rk!a4 - 9*Rk!a6)*xx*xzp
+		+ (3*Rk!a1*Rk!a6 - Rk!a3*Rk!a4)*(xzp + X2*Z1)*(Y1*Z2)
+		+ (3*Rk!a1^2*Rk!a6 - 2*Rk!a1*Rk!a3*Rk!a4 + Rk!a2*Rk!a3^2 + 3*Rk!a2*Rk!a6 - Rk!a4^2)*(X1*Z2)*(xzp + X2*Z1)
+		- (3*Rk!a2*Rk!a6 - Rk!a4^2)*(-2*X1*Z2 - X2*Z1)*X2*Z1
+		+ (Rk!a1^3*Rk!a6 - Rk!a1^2*Rk!a3*Rk!a4 + Rk!a1*Rk!a2*Rk!a3^2 - Rk!a1*Rk!a4^2 + 4*Rk!a1*Rk!a2*Rk!a6 - Rk!a3^3 - 3*Rk!a3*Rk!a6)*(Y1*Z1*Z2^2)
+		+ (Rk!a1^4*Rk!a6 - Rk!a1^3*Rk!a3*Rk!a4 + 5*Rk!a1^2*Rk!a2*Rk!a6 + Rk!a1^2*Rk!a2*Rk!a3^2 - Rk!a1*Rk!a2*Rk!a3*Rk!a4 - Rk!a1*Rk!a3^3 - 3*Rk!a1*Rk!a3*Rk!a6
+		- Rk!a1^2*Rk!a4^2 + Rk!a2^2*Rk!a3^2 - Rk!a2*Rk!a4^2 + 4*Rk!a2^2*Rk!a6 - Rk!a3^2*Rk!a4 - 3*Rk!a4*Rk!a6)*(X1*Z1*Z2^2)
+		+ (Rk!a1^2*Rk!a2*Rk!a6 - Rk!a1*Rk!a2*Rk!a3*Rk!a4 + 3*Rk!a1*Rk!a3*Rk!a6 + Rk!a2^2*Rk!a3^2 - Rk!a2*Rk!a4^2
+		+ 4*Rk!a2^2*Rk!a6 - 2*Rk!a3^2*Rk!a4 - 3*Rk!a4*Rk!a6)*(X2*Z1^2*Z2)
+		+ (Rk!a1^3*Rk!a3*Rk!a6 - Rk!a1^2*Rk!a3^2*Rk!a4 + Rk!a1^2*Rk!a4*Rk!a6 + Rk!a1*Rk!a2*Rk!a3^3
+		+ 4*Rk!a1*Rk!a2*Rk!a3*Rk!a6 - 2*Rk!a1*Rk!a3*Rk!a4^2 + Rk!a2*Rk!a3^2*Rk!a4
+		+ 4*Rk!a2*Rk!a4*Rk!a6 - Rk!a3^4 - 6*Rk!a3^2*Rk!a6 - Rk!a4^3 - 9*Rk!a6^2)*zz^2;
+	Z3_2 := 3*xx*xyp + yy*yzp + 3*Rk!a1*xx^2
+		+ Rk!a1*(xyp + X1*Y2)*Y1*Z2 + Rk!a1^2*X1*Z2*(xyp + X2*Y1)
+		+ Rk!a2*xx*yzp
+		+ Rk!a2*xyp*xzp
+		+ Rk!a1^3*X1^2*X2*Z2 + Rk!a1*Rk!a2*xx*(2*X1*Z2 + X2*Z1)
+		+ 3*Rk!a3*X1*X2^2*Z1 + Rk!a3*Y1*Z2*(yzp + Y2*Z1)
+		+ 2*Rk!a1*Rk!a3*X1*Z2*yzp
+		+ 2*Rk!a1*Rk!a3*(X2*Y1*zz) + Rk!a4*xyp*zz
+		+ Rk!a4*xzp*yzp
+		+ (Rk!a1^2*Rk!a3 + Rk!a1*Rk!a4)*X1*Z2*(xzp + X2*Z1) + Rk!a2*Rk!a3*X2*Z1*(xzp + X1*Z2)
+		+ Rk!a3^2*Y1*Z1*Z2^2 + (Rk!a3^2 + 3*Rk!a6)*yzp*zz
+		+ Rk!a1*Rk!a3^2*(xzp + X1*Z2)*zz + 3*Rk!a1*Rk!a6*X1*Z1*Z2^2
+		+ Rk!a3*Rk!a4*(X1*Z2 + 2*X2*Z1)*zz + (Rk!a3^3 + 3*Rk!a3*Rk!a6)*zz^2;
+
+	Q := [Rk!X3_2, Rk!Y3_2, Rk!Z3_2];
+	//print "Check: ", Q[3] eq Evaluate(Frk, Rk!X, Q[1]);
+	
+	// Go back to standard form
+	while Q[2] ne Rk!1 do
+		coeff := Coefficients(Q[2], X);
+		for j in [2..#coeff] do
+			if coeff[j] ne 0 then
+				dotti := 1 + Rk!X^(j-1) * (-1) * Rk!coeff[j];
+				Q[1] *:= dotti;
+				Q[2] *:= dotti;
+				Q[3] *:= dotti;
+				break;
+			end if;
+		end for;
+	end while;
+
+	return Q;
+end function;
+
+function formalMul(P, n)
+	// Formal version of double and add
+	Rk := Parent(P[1]);
+	Q := [Rk!0,Rk!1,Rk!0];
+	cnt := 0;
+	
+	for i in Reverse(Intseq(n, 2)) do
+		Q := formalAdd(Q, Q);
+		cnt *:= 2;
+		if i eq 1 then
+			Q := formalAdd(Q, P);
+			cnt +:= 1;
+		end if;
+		//print "Mul: ",cnt;
+	end for;
+	return Q;
+end function;
+
+function pseudoInverse(P)
+	Rk := Parent(P[1]);
+	X := Rk.6; // !! IMPORTANT
+	
+	while P[2] ne Rk!1 do
+		coeff := Coefficients(P[2], X);
+		//print "=========================\n", coeff;
+		for j in [2..#coeff] do
+			if coeff[j] ne 0 then
+				dotti := 1 + Rk!X^(j-1) * (-1) * Rk!coeff[j];
+				P[1] *:= dotti;
+				P[2] *:= dotti;
+				P[3] *:= dotti;
+				break;
+			end if;
+		end for;
+	end while;
+
+	return P;
+
+end function;
+
+function fit(ys)
+	// ======================
+	// ys := y corresponding to [1..#ys]
+	//
+	// Returns: coeffs of polynomial
+	// ======================
+	//print "xs:",xs;
+	//print "ys:",ys;
+	Q := RationalField();
+	P<x> := PolynomialRing(Q,1);
+	f := Interpolation([Q!i : i in [1..#ys]], ys);
+	return f;
+
+end function;

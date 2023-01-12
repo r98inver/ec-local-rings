@@ -1,0 +1,63 @@
+load "utils.magma";
+
+// Define the parameters: R_k = F_{p^e}[X]/<X^k>
+p := 7; k := 3; e := 3; 
+
+// Construct R_k
+q := p^e;
+Fq<gamma> := GF(q); // gamma is the primitive element of Fq
+F<eps> := PolynomialRing(Fq);
+I := ideal<F | eps^k>;
+Rk<eps> := F/I;
+// printf "R_k: %o\n", Rk;
+
+// Set the curve, with 2 or 5 coefficients in R_k
+E := [Rk | 6, 2];
+//printf "E: %o\n", E;
+// printf "Is a valid EC: %o\n", IsEC(E); // Check determinant
+
+// Get a random curve over Rk - automatically checks det
+E := RandomCurve(Rk); 
+// printf "Random E: %o\n", E;
+
+// Pick two points and check if they are on the curve
+P := [Rk | 0, 1, 0];
+Q := [Rk | gamma^34*eps^2 + 1, gamma^21*eps+2, 0];
+Q := SF(Q); // Standard Form
+
+// printf "P: %o -> Is on E: %o\n", P, IsOn(P, E);
+// printf "Q: %o -> Is on E: %o\n", Q, IsOn(Q, E);
+
+
+// Pick random Q on the curve
+Q := RandomEPoint(E, k); //k is used to lift the point - automatic detection shoul be added
+// printf "Random Q: %o\n", Q;
+
+// Point addition
+printf "P+Q: %o\n", add(P, Q, E);
+printf "Q+Q: %o\n", add(Q, Q, E);
+
+// Point multiplication
+printf "5Q: %o\n", mul(Q, 5, E);
+
+// Points over O
+P := [Rk | 0, 1, 0];
+P := RandomLift(P, E, k);
+
+// Take a generic curve on F_q with random points
+E := EllipticCurve([GF(q) | 2, 6]);
+
+P := Random(E);
+Q := Random(E);
+P; Q; P+Q;
+
+// Lift the curve
+E := [Rk | i: i in Coefficients(E)];
+E;
+
+// Lift the specific points
+P := RandomLift(P, E, k);
+Q := RandomLift(Q, E, k);
+
+// Point addition again - we get a lift of P+Q since projection is hom
+P; Q; add(P, Q, E);
