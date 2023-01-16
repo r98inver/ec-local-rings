@@ -11,7 +11,7 @@ I := ideal<F | eps^k>;
 Rk<eps> := F/I;
 // printf "R_k: %o\n", Rk;
 
-// Set the curve, with 2 or 5 coefficients in R_k
+// Set the curve, with 2 or 5 coefficients in R_k (casting is important!)
 E := [Rk | 6, 2];
 //printf "E: %o\n", E;
 // printf "Is a valid EC: %o\n", IsEC(E); // Check determinant
