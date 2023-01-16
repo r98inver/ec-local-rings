@@ -10,5 +10,5 @@ Should you have any question or suggestion, do not hesitate to contact the autho
 
 ### Useful sripts
 
-- [utils.magma](https://github.com/r98inver/ec-local-rings/blob/main/utils.magma): the file containing most of the useful function to work with elliptic curves over $F_q[x]/x^k$, including point addition and multiplication, lifting and others;
+- [utils.magma](utils.magma): the file containing most of the useful function to work with elliptic curves over $F_q[x]/x^k$, including point addition and multiplication, lifting and others;
 - [quickstart.magma](https://github.com/r98inver/ec-local-rings/blob/main/quickstart.magma): a showcase of usage of the most important functions of `utils.magma`;
