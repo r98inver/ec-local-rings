@@ -1,0 +1,58 @@
+SetAutoColumns(false);
+SetColumns(0);
+
+load "utils.magma";
+
+// In this example eps^8 | psi_3(3), while psi_9(3) \in R_k^*. 
+// The mindeg M of a point after multiplication by three
+// is sent to the lower value between
+// 3M+8 (the component of X^3) and 9M (the one of X^9)
+
+p := 3;
+k := 20;
+
+F<eps> := PolynomialRing(GF(p));
+I := ideal<F | eps^k>;
+Rk<eps> := F/I;
+
+a1 := eps^4; a2 := eps^8; a3 := 0; a4 := 1; a6 := 0;
+E := [Rk | a1,a2,a3,a4,a6];
+
+psi3 := a1^2 + a2;
+psi9 := 2*a1^5*a3 + a1^4*a2^2 + a1^4*a4 + a1^3*a2*a3 + a1^2*a2^3 + 2*a1^2*a2*a4 + a1^2*a6 + 2*a1*a2^2*a3 + 2*a1*a3*a4 + a2^2*a4 + a2*a3^2 + a2*a6 + 2*a4^2;
+
+printf "a1: %o - a2: %o - a3: %o - a4: %o - a6: %o\npsi3: %o\npsi9: %o\n", a1,a2,a3,a4,a6,psi3,psi9;
+
+printf "--------\nExample 1\n--------\n";
+// mindeg(P_1) = 4
+// The mindeg of 3P_1 whould be 12+8 = 20, but since k=20 the point has order 3
+P1 := [
+	eps^19 + eps^14 + eps^13 + eps^10 + 2*eps^9 + eps^8 + 2*eps^7 + eps^6 + eps^4,
+	1,
+	eps^18 + eps^12
+];
+
+printf "P1: %o\n---\n3*P1: %o\n", P1, mul(P1, 3, E);
+
+printf "--------\nExample 2\n--------\n";
+// mindeg(P_2) = 1
+// Then since 9 < 3*3 + 9 mindeg(3P_2) = 9
+P2 := [
+	eps^19 + eps^18 + 2*eps^16 + 2*eps^14 + eps^12 + 2*eps^10 + 2*eps^9 + eps^6 + 2*eps^4 + 2*eps^3 + eps,
+	1,
+	2*eps^19 + 2*eps^17 + 2*eps^16 + eps^15 + eps^13 + eps^9 + 2*eps^8 + eps^7 + eps^3
+];
+
+printf "P2: %o\n---\n3*P2: %o\n---\n9*P2: %o\n", P2, mul(P2, 3, E), mul(P2, 9, E);
+
+printf "--------\nExample 3\n--------\n";
+// mindeg(P_3) = 2
+// Then since 2*3 + 4 = 14 < 18 = 9*2, mindeg(3P_3) = 14
+P3 := [
+	eps^18 + eps^17 + 2*eps^16 + 2*eps^15 + eps^14 + eps^13 + eps^10 + eps^9 + eps^7 + eps^6 + eps^5 + eps^4 + eps^3 + 2*eps^2,
+	1,
+	2*eps^19 + eps^18 + eps^16 + eps^15 + eps^13 + eps^9 + 2*eps^6
+];
+
+
+printf "P3: %o\n---\n3*P3: %o\n---\n9*P3: %o\n", P3, mul(P3, 3, E), mul(P3, 9, E);

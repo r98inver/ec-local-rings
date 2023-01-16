@@ -1,0 +1,46 @@
+load "utils.magma";
+R<a1, a2, a3, a4, a6, n> := PolynomialRing(Rationals(), 6);
+load "psi_loaded_17.magma"; 
+
+// We show that dt \in <psi2(2), psi4(2)> over F_2 and
+// dt \in <psi3(3), psi9(3)> over F_3
+
+for p in [2,3] do 
+	print "--------------------------------------";
+	printf "p: %o\n", p;
+	print "--------------------------------------";
+
+	psip_stored := [Evaluate(psi_stored[i], R!n, p) : i in [1..17]]; // Evaluate all psi_i in p
+	Rp<a1, a2, a3, a4, a6> := PolynomialRing(GF(p), 5);
+	mp := hom< R -> Rp | a1, a2, a3, a4, a6, Rp!1 >;
+	psip_stored := [mp(x) : x in psip_stored]; // Cast the psi_i to F_p[x]/x^k
+
+	b2 := a1^2 + 4*a2;
+	b4 := 2*a4 + a1*a3;
+	b6 := a3^2 + 4*a6;
+	b8 := a1^2*a6 + 4*a2*a6 - a1*a3*a4 + a2*a3^2 - a4^2;
+	dt := -b2^2*b8 - 8*b4^3 - 27*b6^2 + 9*b2*b4*b6;
+
+	printf "b2: %o - b4: %o - b6: %o - b8: %o\ndt: %o\n", b2,b4,b6,b8,dt;
+	
+	phi_p := psip_stored[p]; // psi_p(p)
+	phi_p2 := psip_stored[p^2]; // psi_p^2(p)
+	printf "psi_%o(%o): %o\npsi_%o(%o): %o\n", p, p, phi_p, p^2, p, phi_p2;
+	I := IdealWithFixedBasis([phi_p, phi_p2]);
+	assert dt in I;
+	printf "Coordinates of dt:\n%o\n", Coordinates(I, dt);
+	print "-------";
+	I := IdealWithFixedBasis([phi_p]);
+	for i in [1..(p^2 - 1)] do
+		if GCD(i, p) eq 1 then
+			// psi_i(p) = 0 for (i,p)=1
+			assert psip_stored[i] eq 0;
+			printf "psi_%o(%o): %o\n", i, p, psip_stored[i];
+		else
+			// psi_np(p) \in (psi_p(p))
+			assert psip_stored[i] in I;
+			printf "psi_%o(%o): %o = (%o)*psi_%o(%o)\n",i,p,psip_stored[i], Coordinates(I, psip_stored[i])[1],p,p;
+		end if;
+	end for;
+	
+end for;
