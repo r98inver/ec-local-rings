@@ -1,7 +1,7 @@
 // Load psi_i coefficients for i <= 17
 
 R<a1, a2, a3, a4, a6, n> := PolynomialRing(Rationals(), 6);
-load "psi_stored17.magma";
+load "psi_stored_17.magma";
 
 psi_stored := [
 	psi1,
