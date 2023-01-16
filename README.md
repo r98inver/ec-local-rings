@@ -17,4 +17,4 @@ Should you have any question or suggestion, do not hesitate to contact the autho
 
 - [utils.magma](utils.magma): the file containing most of the useful function to work with elliptic curves over $F_q[x]/x^k$, including point addition and multiplication, lifting and others;
 - [quickstart.magma](quickstart.magma): a showcase of usage of the most important functions of `utils.magma`;
-- [zfx_stored_30.magma](zfx_stored_30.magma) / [zfxred_stored_300.magma](zfx_stored_30.magma): stored values of the $z$ coordinate of a point over $\mathcal{O}$ as a polynomial function of its $x$ in the extended (reduced) form, for $k=30$ ($k=300$). Notice that a symbolic polynomial ring must be defined before loading; specific loading instructions are provided in each file;
+- [zfx_stored_30.magma](zfx_stored_30.magma) / [zfxred_stored_300.magma](zfx_stored_30.magma): stored values of the $z$ coordinate of a point over $\mathcal{O}$ as a polynomial function of its $x$ in the extended (resp. reduced) form, for $k=30$ (resp. $k=300$ ). Notice that a symbolic polynomial ring must be defined before loading; specific loading instructions are provided in each file;
