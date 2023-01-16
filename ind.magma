@@ -1,0 +1,187 @@
+// Infer the structure of coefficients in the sum by computing P+nP
+SetAutoColumns(false);
+SetColumns(0);
+
+function formalAdd(P, Q)
+	//R<a1, a2, a3, a4, a6, X> := PolynomialRing(Integers(), 8);
+	//I := ideal<R | X^k>;
+	//Rk := R/I;
+	Rk := Parent(P[1]);
+	a1 := Rk.1; a2 := Rk.2; a3 := Rk.3; a4 := Rk.4; a6 := Rk.5;
+	X := Rk.6;
+	X1 := Rk!P[1]; Y1 := Rk!P[2]; Z1 := Rk!P[3];
+	X2 := Rk!Q[1]; Y2 := Rk!Q[2]; Z2 := Rk!Q[3];
+	g1 := X1*X2*a1 + X2*Z1*a3 + X2*Y1 + X1*Y2;
+	g2 := X1*Z2*a1 + Z1*Z2*a3 + Y2*Z1 + Y1*Z2;
+	Q1 := -X1*Z2*a1*a3 - Z1*Z2*a3^2 + X2*Y1*a1 - X1*X2*a2 - X2*Z1*a4 - X1*Z2*a4 - 3*Z1*Z2*a6 + Y1*Y2;
+	Q2 := -Z1*Z2*a2*a3^2 + Z1*Z2*a1*a3*a4 - Z1*Z2*a1^2*a6 - X1*Z2*a3^2 + Z1*Z2*a4^2 - 4*Z1*Z2*a2*a6 + X2*Y1*a3 - X1*X2*a4 - 3*X2*Z1*a6 - 3*X1*Z2*a6;
+	Q3 := X1*Z2*a1^2 + Z1*Z2*a1*a3 + Y1*Z2*a1 + X2*Z1*a2 + X1*Z2*a2 + Z1*Z2*a4 + 3*X1*X2;
+	Q4 := X1*Z2*a1*a3 + Z1*Z2*a3^2 + X1*X2*a2 + Y1*Z2*a3 + X2*Z1*a4 + X1*Z2*a4 + 3*Z1*Z2*a6 + Y1*Y2;
+	X3 := g1*Q1 + g2*Q2;
+	Y3 := Q1*Q4 - Q2*Q3;
+	Z3 := g1*Q3 + g2*Q4;
+	Q := [ X3, Y3, Z3 ];
+	
+	// Go back to standard form
+	while Q[2] ne Rk!1 do
+		coeff := Coefficients(Q[2], X);
+		for j in [2..#coeff] do
+			if coeff[j] ne 0 then
+				dotti := 1 + Rk!X^(j-1) * (-1) * Rk!coeff[j];
+				Q[1] *:= dotti;
+				Q[2] *:= dotti;
+				Q[3] *:= dotti;
+				break;
+			end if;
+		end for;
+	end while;
+	return Q;
+end function;
+
+function formalMul(P, n)
+	// Formal version of double and add
+	Rk := Parent(P[1]);
+	Q := [Rk!0,Rk!1,Rk!0];
+	cnt := 0;
+	for i in Reverse(Intseq(n, 2)) do
+		Q := formalAdd(Q, Q);
+		cnt *:= 2;
+		if i eq 1 then
+			Q := formalAdd(Q, P);
+			cnt +:= 1;
+		end if;
+		//print "Mul: ",cnt;
+	end for;
+	return Q;
+end function;
+
+function fit(ys)
+	// ======================
+	// ys := y corresponding to [1..#ys]
+	//
+	// Returns: coeffs of polynomial
+	// ======================
+	//print "xs:",xs;
+	//print "ys:",ys;
+	Q := RationalField();
+	P<x> := PolynomialRing(Q,1);
+	f := Interpolation([Q!i : i in [1..#ys]], ys);
+	return f;
+end function;
+
+k := 29;
+proof := false; // Compute the induction step
+
+// We pick a generic curve
+R<a1, a2, a3, a4, a6, X, n> := PolynomialRing(Rationals(), 7);
+
+// Z = F(X)
+load "zfx_stored_30.magma";
+print "Loaded";
+
+n_coeff := 30; // Number of coefficients to determine (up to X^n_coeff)
+
+// Closed form for X for the first few coefficients
+psi1 := n;
+psi2 := a1 * (n-1) * n * (1/2);
+psi3 := a1^2*n*(n-1)*(n-2)/6 - a2*(n+1)*n*(n-1)/3;
+psi4 := 1/24*a1^3*n^4 - 1/4*a1^3*n^3 + 11/24*a1^3*n^2 - 1/4*a1^3*n - 1/3*a1*a2*n^4 + 1/2*a1*a2*n^3 + 1/3*a1*a2*n^2 - 1/2*a1*a2*n + 1/2*a3*n^4 - 1/2*a3*n;
+psi5 := 1/120*a1^4*n^5 - 1/12*a1^4*n^4 + 7/24*a1^4*n^3 - 5/12*a1^4*n^2 + 1/5*a1^4*n - 11/60*a1^2*a2*n^5 + 2/3*a1^2*a2*n^4 - 5/12*a1^2*a2*n^3 - 2/3*a1^2*a2*n^2 + 3/5*a1^2*a2*n + 3/10*a1*a3*n^5 - a1*a3*n^4 - 1/2*a1*a3*n^2 + 6/5*a1*a3*n + 2/15*a2^2*n^5 - 1/3*a2^2*n^3 + 1/5*a2^2*n - 2/5*a4*n^5 + 2/5*a4*n;
+psi6 := 1/720*a1^5*n^6 - 1/48*a1^5*n^5 + 17/144*a1^5*n^4 - 5/16*a1^5*n^3 + 137/360*a1^5*n^2 - 1/6*a1^5*n - 13/180*a1^3*a2*n^6 + 11/24*a1^3*a2*n^5 - 8/9*a1^3*a2*n^4 + 5/24*a1^3*a2*n^3 + 173/180*a1^3*a2*n^2 - 2/3*a1^3*a2*n + 2/15*a1^2*a3*n^6 - 3/4*a1^2*a3*n^5 + 17/12*a1^2*a3*n^4 - 1/4*a1^2*a3*n^3 + 29/20*a1^2*a3*n^2 - 2*a1^2*a3*n + 17/90*a1*a2^2*n^6 - 1/3*a1*a2^2*n^5 - 4/9*a1*a2^2*n^4 + 5/6*a1*a2^2*n^3 + 23/90*a1*a2^2*n^2 - 1/2*a1*a2^2*n - 2/5*a1*a4*n^6 + a1*a4*n^5 + 2/5*a1*a4*n^2 - a1*a4*n - 1/6*a2*a3*n^6 + 2/3*a2*a3*n^4 + 1/2*a2*a3*n^3 - a2*a3*n;
+
+formal_X := psi1*X + psi2*X^2 + psi3*X^3 + psi4*X^4 + psi5*X^5;
+
+// Obtaining the structure of X for each value of k
+for k in [2..n_coeff+1] do 
+	print "=======\nk = ", k, "\n=======";
+	I := ideal<R | R.6^k>; // R.6 := X
+	Rk := R/I;
+
+	// Casting of variables
+	a1 := Rk!R.1;
+	a2 := Rk!R.2;
+	a3 := Rk!R.3;
+	a4 := Rk!R.4;
+	a6 := Rk!R.5;
+	X := Rk!R.6;
+	n := Rk!R.7;
+
+	// Casting of F
+	Fk := Rk!F;
+	
+	// Points
+	P := [Rk!X, Rk!1, Fk];
+	Q := P;
+	
+	residuals := [Rk!0];
+
+	for i in [2..k+10] do
+		
+		Q := formalAdd(P, Q);
+		
+		//print "Q: ", Q[1];
+		res := Q[1] - Rk!Evaluate(formal_X, n, i);
+		Append(~residuals, res);
+		
+		if res eq 0 then continue; end if;
+
+		cff := Coefficients(res, X);
+		assert IsDivisibleBy(res, Rk!X^(k-1));
+
+	end for;
+	
+	if residuals[#residuals] eq Rk!0 then
+		print "Empty residuals --> skip";
+		SetOutputFile("psi_stored.magma");
+		printf "psi%o := %o;\n", k-1, Coefficient(formal_X, X, k-1);
+		UnsetOutputFile();
+		continue;
+	end if;
+
+	residuals := [Coefficient(r, Rk!X, k-1) : r in residuals];
+
+	all_monomials := Monomials(residuals[#residuals]);
+	final_coeff := 0;
+	for m in all_monomials do
+		//printf "-----\nFitting poly for %o...\n", m;
+		
+		ys := [MonomialCoefficient(residuals[i], m) : i in [1..k+5]];
+		
+		// Check on last values
+		fitted_poly := fit(ys);
+		for i in [k+5..k+10] do
+			assert  Evaluate(fitted_poly, i) eq MonomialCoefficient(residuals[i], m);
+		end for;
+		//print "Check passed!";
+		
+		// Cast into R (R.8 = n)
+		fitted_poly := MultivariatePolynomial(R, fitted_poly, R.7);
+		//print "Fitted: ",fitted_poly;
+		final_coeff +:= R!m * fitted_poly;
+
+	end for;
+	SetOutputFile("psi_stored.magma");
+	printf "psi%o := %o;\n", k-1, final_coeff;
+	//printf "final_coeff := %o\n", final_coeff;
+	UnsetOutputFile();
+	printf "Computed psi%o\n", k-1;
+
+	// R.6 = X
+	formal_X +:= final_coeff*(R.6)^(k-1);
+
+	// Check induction
+	if proof then
+		// Basis Point
+		P_1 := [Rk!Evaluate(formal_X, n, 1), Rk!1, Evaluate(Fk, X, Rk!Evaluate(formal_X, n, 1))];
+		assert P_1 eq [Rk!X, Rk!1, Evaluate(F, X, Rk!X)];
+		print "Induction base ok...";
+
+		// Induction Step
+		P_n := [Rk!formal_X, Rk!1, Rk!Evaluate(Fk, X, formal_X)];
+		P_n1 := [Rk!Evaluate(formal_X, n, Rk!(n+1)), Rk!1, Rk!Evaluate(F, X, Rk!Evaluate(formal_X, n, Rk!(n+1)))];
+
+		assert formalAdd(P_n, P_1) eq P_n1;
+		print "Induction step ok!";
+	end if;
+	
+end for;
