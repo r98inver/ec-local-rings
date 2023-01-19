@@ -13,13 +13,13 @@ function formalAdd(P, Q)
 	X2 := Rk!Q[1]; Y2 := Rk!Q[2]; Z2 := Rk!Q[3];
 	g1 := X1*X2*a1 + X2*Z1*a3 + X2*Y1 + X1*Y2;
 	g2 := X1*Z2*a1 + Z1*Z2*a3 + Y2*Z1 + Y1*Z2;
-	Q1 := -X1*Z2*a1*a3 - Z1*Z2*a3^2 + X2*Y1*a1 - X1*X2*a2 - X2*Z1*a4 - X1*Z2*a4 - 3*Z1*Z2*a6 + Y1*Y2;
-	Q2 := -Z1*Z2*a2*a3^2 + Z1*Z2*a1*a3*a4 - Z1*Z2*a1^2*a6 - X1*Z2*a3^2 + Z1*Z2*a4^2 - 4*Z1*Z2*a2*a6 + X2*Y1*a3 - X1*X2*a4 - 3*X2*Z1*a6 - 3*X1*Z2*a6;
-	Q3 := X1*Z2*a1^2 + Z1*Z2*a1*a3 + Y1*Z2*a1 + X2*Z1*a2 + X1*Z2*a2 + Z1*Z2*a4 + 3*X1*X2;
-	Q4 := X1*Z2*a1*a3 + Z1*Z2*a3^2 + X1*X2*a2 + Y1*Z2*a3 + X2*Z1*a4 + X1*Z2*a4 + 3*Z1*Z2*a6 + Y1*Y2;
-	X3 := g1*Q1 + g2*Q2;
-	Y3 := Q1*Q4 - Q2*Q3;
-	Z3 := g1*Q3 + g2*Q4;
+	H1 := -X1*Z2*a1*a3 - Z1*Z2*a3^2 + X2*Y1*a1 - X1*X2*a2 - X2*Z1*a4 - X1*Z2*a4 - 3*Z1*Z2*a6 + Y1*Y2;
+	H2 := -Z1*Z2*a2*a3^2 + Z1*Z2*a1*a3*a4 - Z1*Z2*a1^2*a6 - X1*Z2*a3^2 + Z1*Z2*a4^2 - 4*Z1*Z2*a2*a6 + X2*Y1*a3 - X1*X2*a4 - 3*X2*Z1*a6 - 3*X1*Z2*a6;
+	H3 := X1*Z2*a1^2 + Z1*Z2*a1*a3 + Y1*Z2*a1 + X2*Z1*a2 + X1*Z2*a2 + Z1*Z2*a4 + 3*X1*X2;
+	H4 := X1*Z2*a1*a3 + Z1*Z2*a3^2 + X1*X2*a2 + Y1*Z2*a3 + X2*Z1*a4 + X1*Z2*a4 + 3*Z1*Z2*a6 + Y1*Y2;
+	X3 := g1*H1 + g2*H2;
+	Y3 := H1*H4 - H2*H3;
+	Z3 := g1*H3 + g2*H4;
 	Q := [ X3, Y3, Z3 ];
 	
 	// Go back to standard form
@@ -27,10 +27,10 @@ function formalAdd(P, Q)
 		coeff := Coefficients(Q[2], X);
 		for j in [2..#coeff] do
 			if coeff[j] ne 0 then
-				dotti := 1 + Rk!X^(j-1) * (-1) * Rk!coeff[j];
-				Q[1] *:= dotti;
-				Q[2] *:= dotti;
-				Q[3] *:= dotti;
+				inv_y := 1 + Rk!X^(j-1) * (-1) * Rk!coeff[j];
+				Q[1] *:= inv_y;
+				Q[2] *:= inv_y;
+				Q[3] *:= inv_y;
 				break;
 			end if;
 		end for;

@@ -37,18 +37,18 @@ function poly1(X1,Y1,Z1, X2,Y2,Z2, a1,a2,a3,a4,a6)
 	return [X3_1, Y3_1, Z3_1];
 end function;
 	
-function poly2(x1,y1,z1,x2,y2,z2, a1,a2,a3,a4,a6)
-	g1 := x1*x2*a1 + x2*z1*a3 + x2*y1 + x1*y2;
-	g2 := x1*z2*a1 + z1*z2*a3 + y2*z1 + y1*z2;
+function poly2(X1,Y1,Z1,X2,Y2,Z2, a1,a2,a3,a4,a6)
+	g1 := X1*X2*a1 + X2*Z1*a3 + X2*Y1 + X1*Y2;
+	g2 := X1*Z2*a1 + Z1*Z2*a3 + Y2*Z1 + Y1*Z2;
 
-	Q1 := -x1*z2*a1*a3 - z1*z2*a3^2 + x2*y1*a1 - x1*x2*a2 - x2*z1*a4 - x1*z2*a4 - 3*z1*z2*a6 + y1*y2;
-	Q2 := -z1*z2*a2*a3^2 + z1*z2*a1*a3*a4 - z1*z2*a1^2*a6 - x1*z2*a3^2 + z1*z2*a4^2 - 4*z1*z2*a2*a6 + x2*y1*a3 - x1*x2*a4 - 3*x2*z1*a6 - 3*x1*z2*a6;
-	Q3 := x1*z2*a1^2 + z1*z2*a1*a3 + y1*z2*a1 + x2*z1*a2 + x1*z2*a2 + z1*z2*a4 + 3*x1*x2;
-	Q4 := x1*z2*a1*a3 + z1*z2*a3^2 + x1*x2*a2 + y1*z2*a3 + x2*z1*a4 + x1*z2*a4 + 3*z1*z2*a6 + y1*y2;
+	H1 := -X1*Z2*a1*a3 - Z1*Z2*a3^2 + X2*Y1*a1 - X1*X2*a2 - X2*Z1*a4 - X1*Z2*a4 - 3*Z1*Z2*a6 + Y1*Y2;
+	H2 := -Z1*Z2*a2*a3^2 + Z1*Z2*a1*a3*a4 - Z1*Z2*a1^2*a6 - X1*Z2*a3^2 + Z1*Z2*a4^2 - 4*Z1*Z2*a2*a6 + X2*Y1*a3 - X1*X2*a4 - 3*X2*Z1*a6 - 3*X1*Z2*a6;
+	H3 := X1*Z2*a1^2 + Z1*Z2*a1*a3 + Y1*Z2*a1 + X2*Z1*a2 + X1*Z2*a2 + Z1*Z2*a4 + 3*X1*X2;
+	H4 := X1*Z2*a1*a3 + Z1*Z2*a3^2 + X1*X2*a2 + Y1*Z2*a3 + X2*Z1*a4 + X1*Z2*a4 + 3*Z1*Z2*a6 + Y1*Y2;
 	
-	X3 := g1*Q1 + g2*Q2;
-	Y3 := Q1*Q4 - Q2*Q3;
-	Z3 := g1*Q3 + g2*Q4;
+	X3 := g1*H1 + g2*H2;
+	Y3 := H1*H4 - H2*H3;
+	Z3 := g1*H3 + g2*H4;
 	return [ X3, Y3, Z3 ];
 end function;
 
@@ -368,109 +368,6 @@ function RandomLift(P, E, k)
 
 end function;
 
-function formalAdd(P, Q)
-	//R<a1, a2, a3, a4, a6, X> := PolynomialRing(Integers(), 8);
-	//I := ideal<R | X^k>;
-	//Rk := R/I;
-	
-	Rk := Parent(P[1]);
-	
-	a1 := Rk.1; a2 := Rk.2; a3 := Rk.3; a4 := Rk.4; a6 := Rk.5;
-	X := Rk.6;
-
-	X1 := Rk!P[1]; Y1 := Rk!P[2]; Z1 := Rk!P[3];
-	X2 := Rk!Q[1]; Y2 := Rk!Q[2]; Z2 := Rk!Q[3];
-
-	xx := X1*X2;
-	yy := Y1*Y2;
-	zz := Z1*Z2;
-
-	xyp := X1*Y2 + X2*Y1;
-	xym := X1*Y2 - X2*Y1;
-	xzp := X1*Z2 + X2*Z1;
-	xzm := X1*Z2 - X2*Z1;
-	yzp := Y1*Z2 + Y2*Z1;
-	yzm := Y1*Z2 - Y2*Z1;
-
-	X3_2 := yy*xyp + Rk!a1*(2*X1*Y2 + X2*Y1)*(X2*Y1) + Rk!a1^2*(X1*X2^2*Y1)
-		- Rk!a2*xx*xyp - Rk!a1*Rk!a2*xx^2 + Rk!a3*(X2*Y1)*(Y1*Z2 + 2*Y2*Z1)
-		+ Rk!a1*Rk!a3*xx*yzm - Rk!a1*Rk!a3*xyp*xzm
-		- Rk!a4*xx*yzp - Rk!a4*xyp*xzp
-		- Rk!a1^2*Rk!a3*(X1^2*X2*Z2) - Rk!a1*Rk!a4*xx*(2*X1*Z2 + X2*Z1)
-		- Rk!a2*Rk!a3*X1*X2^2*Z1 - Rk!a3^2*X1*Z2*(2*Y2*Z1 + Y1*Z2)
-		- 3*Rk!a6*xyp*zz
-		- 3*Rk!a6*xzp*yzp - Rk!a1*Rk!a3^2*X1*Z2*(X1*Z2 + 2*X2*Z1)
-		- 3*Rk!a1*Rk!a6*X1*Z2*(X1*Z2 + 2*X2*Z1) + Rk!a3*Rk!a4*(-2*X1*Z2 - X2*Z1)*(X2*Z1)
-		- (Rk!a1^2*Rk!a6 - Rk!a1*Rk!a3*Rk!a4 + Rk!a2*Rk!a3^2 + 4*Rk!a2*Rk!a6 - Rk!a4^2)*yzp*zz
-		- (Rk!a1^3*Rk!a6 - Rk!a1^2*Rk!a3*Rk!a4 + Rk!a1*Rk!a2*Rk!a3^2 + 4*Rk!a1*Rk!a2*Rk!a6 - Rk!a1*Rk!a4^2)*(X1*Z1*Z2^2)
-		- Rk!a3^3*xzp*zz - 3*Rk!a3*Rk!a6*(xzp + X2*Z1)*zz
-		- (Rk!a1^2*Rk!a3*Rk!a6 - Rk!a1*Rk!a3^2*Rk!a4 + Rk!a2*Rk!a3^3 + 4*Rk!a2*Rk!a3*Rk!a6 - Rk!a3*Rk!a4^2)*zz^2;
-	Y3_2 := yy^2 + Rk!a1*X2*Y1^2*Y2 + (Rk!a1*Rk!a2 - 3*Rk!a3)*(X1*X2^2*Y1)
-		+ Rk!a3*(Y1^2*Y2*Z2) - (Rk!a2^2 - 3*Rk!a4)*xx^2
-		+ (Rk!a1*Rk!a4 - Rk!a2*Rk!a3)*(xzp + X1*Z2)*(X2*Y1)
-		+ (Rk!a1^2*Rk!a4 - 2*Rk!a1*Rk!a2*Rk!a3 + 3*Rk!a3^2)*(X1^2*X2*Z2)
-		- (Rk!a2*Rk!a4 - 9*Rk!a6)*xx*xzp
-		+ (3*Rk!a1*Rk!a6 - Rk!a3*Rk!a4)*(xzp + X2*Z1)*(Y1*Z2)
-		+ (3*Rk!a1^2*Rk!a6 - 2*Rk!a1*Rk!a3*Rk!a4 + Rk!a2*Rk!a3^2 + 3*Rk!a2*Rk!a6 - Rk!a4^2)*(X1*Z2)*(xzp + X2*Z1)
-		- (3*Rk!a2*Rk!a6 - Rk!a4^2)*(-2*X1*Z2 - X2*Z1)*X2*Z1
-		+ (Rk!a1^3*Rk!a6 - Rk!a1^2*Rk!a3*Rk!a4 + Rk!a1*Rk!a2*Rk!a3^2 - Rk!a1*Rk!a4^2 + 4*Rk!a1*Rk!a2*Rk!a6 - Rk!a3^3 - 3*Rk!a3*Rk!a6)*(Y1*Z1*Z2^2)
-		+ (Rk!a1^4*Rk!a6 - Rk!a1^3*Rk!a3*Rk!a4 + 5*Rk!a1^2*Rk!a2*Rk!a6 + Rk!a1^2*Rk!a2*Rk!a3^2 - Rk!a1*Rk!a2*Rk!a3*Rk!a4 - Rk!a1*Rk!a3^3 - 3*Rk!a1*Rk!a3*Rk!a6
-		- Rk!a1^2*Rk!a4^2 + Rk!a2^2*Rk!a3^2 - Rk!a2*Rk!a4^2 + 4*Rk!a2^2*Rk!a6 - Rk!a3^2*Rk!a4 - 3*Rk!a4*Rk!a6)*(X1*Z1*Z2^2)
-		+ (Rk!a1^2*Rk!a2*Rk!a6 - Rk!a1*Rk!a2*Rk!a3*Rk!a4 + 3*Rk!a1*Rk!a3*Rk!a6 + Rk!a2^2*Rk!a3^2 - Rk!a2*Rk!a4^2
-		+ 4*Rk!a2^2*Rk!a6 - 2*Rk!a3^2*Rk!a4 - 3*Rk!a4*Rk!a6)*(X2*Z1^2*Z2)
-		+ (Rk!a1^3*Rk!a3*Rk!a6 - Rk!a1^2*Rk!a3^2*Rk!a4 + Rk!a1^2*Rk!a4*Rk!a6 + Rk!a1*Rk!a2*Rk!a3^3
-		+ 4*Rk!a1*Rk!a2*Rk!a3*Rk!a6 - 2*Rk!a1*Rk!a3*Rk!a4^2 + Rk!a2*Rk!a3^2*Rk!a4
-		+ 4*Rk!a2*Rk!a4*Rk!a6 - Rk!a3^4 - 6*Rk!a3^2*Rk!a6 - Rk!a4^3 - 9*Rk!a6^2)*zz^2;
-	Z3_2 := 3*xx*xyp + yy*yzp + 3*Rk!a1*xx^2
-		+ Rk!a1*(xyp + X1*Y2)*Y1*Z2 + Rk!a1^2*X1*Z2*(xyp + X2*Y1)
-		+ Rk!a2*xx*yzp
-		+ Rk!a2*xyp*xzp
-		+ Rk!a1^3*X1^2*X2*Z2 + Rk!a1*Rk!a2*xx*(2*X1*Z2 + X2*Z1)
-		+ 3*Rk!a3*X1*X2^2*Z1 + Rk!a3*Y1*Z2*(yzp + Y2*Z1)
-		+ 2*Rk!a1*Rk!a3*X1*Z2*yzp
-		+ 2*Rk!a1*Rk!a3*(X2*Y1*zz) + Rk!a4*xyp*zz
-		+ Rk!a4*xzp*yzp
-		+ (Rk!a1^2*Rk!a3 + Rk!a1*Rk!a4)*X1*Z2*(xzp + X2*Z1) + Rk!a2*Rk!a3*X2*Z1*(xzp + X1*Z2)
-		+ Rk!a3^2*Y1*Z1*Z2^2 + (Rk!a3^2 + 3*Rk!a6)*yzp*zz
-		+ Rk!a1*Rk!a3^2*(xzp + X1*Z2)*zz + 3*Rk!a1*Rk!a6*X1*Z1*Z2^2
-		+ Rk!a3*Rk!a4*(X1*Z2 + 2*X2*Z1)*zz + (Rk!a3^3 + 3*Rk!a3*Rk!a6)*zz^2;
-
-	Q := [Rk!X3_2, Rk!Y3_2, Rk!Z3_2];
-	//print "Check: ", Q[3] eq Evaluate(Frk, Rk!X, Q[1]);
-	
-	// Go back to standard form
-	while Q[2] ne Rk!1 do
-		coeff := Coefficients(Q[2], X);
-		for j in [2..#coeff] do
-			if coeff[j] ne 0 then
-				dotti := 1 + Rk!X^(j-1) * (-1) * Rk!coeff[j];
-				Q[1] *:= dotti;
-				Q[2] *:= dotti;
-				Q[3] *:= dotti;
-				break;
-			end if;
-		end for;
-	end while;
-	return Q;
-end function;
-
-function formalMul(P, n)
-	// Formal version of double and add
-	Rk := Parent(P[1]);
-	Q := [Rk!0,Rk!1,Rk!0];
-	cnt := 0;
-	for i in Reverse(Intseq(n, 2)) do
-		Q := formalAdd(Q, Q);
-		cnt *:= 2;
-		if i eq 1 then
-			Q := formalAdd(Q, P);
-			cnt +:= 1;
-		end if;
-		//print "Mul: ",cnt;
-	end for;
-	return Q;
-end function;
-
 function pseudoInverse(P)
 	Rk := Parent(P[1]);
 	X := Rk.6; // !! IMPORTANT
@@ -488,20 +385,4 @@ function pseudoInverse(P)
 		end for;
 	end while;
 	return P;
-
 end function;
-
-function fit(ys)
-	// ======================
-	// ys := y corresponding to [1..#ys]
-	//
-	// Returns: coeffs of polynomial
-	// ======================
-	//print "xs:",xs;
-	//print "ys:",ys;
-	Q := RationalField();
-	P<x> := PolynomialRing(Q,1);
-	f := Interpolation([Q!i : i in [1..#ys]], ys);
-	return f;
-end function;
-

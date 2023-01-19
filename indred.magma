@@ -17,14 +17,14 @@ function formalAddReduced(P, Q)
 	g1 := X2*Y1 + X1*Y2;
 	g2 := Y2*Z1 + Y1*Z2;
 
-	Q1 := - X2*Z1*A - X1*Z2*A - 3*Z1*Z2*B + Y1*Y2;
-	Q2 := Z1*Z2*A^2 - X1*X2*A - 3*X2*Z1*B - 3*X1*Z2*B;
-	Q3 := Z1*Z2*A + 3*X1*X2;
-	Q4 := X2*Z1*A + X1*Z2*A + 3*Z1*Z2*B + Y1*Y2;
+	H1 := - X2*Z1*A - X1*Z2*A - 3*Z1*Z2*B + Y1*Y2;
+	H2 := Z1*Z2*A^2 - X1*X2*A - 3*X2*Z1*B - 3*X1*Z2*B;
+	H3 := Z1*Z2*A + 3*X1*X2;
+	H4 := X2*Z1*A + X1*Z2*A + 3*Z1*Z2*B + Y1*Y2;
 
-	X3 := g1*Q1 + g2*Q2;
-	Y3 := Q1*Q4 - Q2*Q3;
-	Z3 := g1*Q3 + g2*Q4;
+	X3 := g1*H1 + g2*H2;
+	Y3 := H1*H4 - H2*H3;
+	Z3 := g1*H3 + g2*H4;
 	
 	Q := [Rk!X3, Rk!Y3, Rk!Z3];
 	
@@ -33,10 +33,10 @@ function formalAddReduced(P, Q)
 		coeff := Coefficients(Q[2], X);
 		for j in [2..#coeff] do
 			if coeff[j] ne 0 then
-				dotti := 1 + Rk!X^(j-1) * (-1) * Rk!coeff[j];
-				Q[1] *:= dotti;
-				Q[2] *:= dotti;
-				Q[3] *:= dotti;
+				inv_y := 1 + Rk!X^(j-1) * (-1) * Rk!coeff[j];
+				Q[1] *:= inv_y;
+				Q[2] *:= inv_y;
+				Q[3] *:= inv_y;
 				break;
 			end if;
 		end for;
