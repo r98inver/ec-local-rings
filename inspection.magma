@@ -1,0 +1,43 @@
+
+R<X1,X2,Z1,Z2,a1,a2,a3,a4,a6> := PolynomialRing(Integers(), 10);
+Y1 := 1;
+Y2 := 1;
+
+
+// Px = X2, Pz = Z2
+// Qx = X1, Qz = Z1
+
+g1 := X1*X2*a1 + X2*Z1*a3 + X2*Y1 + X1*Y2;
+g2 := X1*Z2*a1 + Z1*Z2*a3 + Y2*Z1 + Y1*Z2;
+
+H1 := -X1*Z2*a1*a3 - Z1*Z2*a3^2 + X2*Y1*a1 - X1*X2*a2 - X2*Z1*a4 - X1*Z2*a4 - 3*Z1*Z2*a6 + Y1*Y2;
+H2 := -Z1*Z2*a2*a3^2 + Z1*Z2*a1*a3*a4 - Z1*Z2*a1^2*a6 - X1*Z2*a3^2 + Z1*Z2*a4^2 - 4*Z1*Z2*a2*a6 + X2*Y1*a3 - X1*X2*a4 - 3*X2*Z1*a6 - 3*X1*Z2*a6;
+H3 := X1*Z2*a1^2 + Z1*Z2*a1*a3 + Y1*Z2*a1 + X2*Z1*a2 + X1*Z2*a2 + Z1*Z2*a4 + 3*X1*X2;
+H4 := X1*Z2*a1*a3 + Z1*Z2*a3^2 + X1*X2*a2 + Y1*Z2*a3 + X2*Z1*a4 + X1*Z2*a4 + 3*Z1*Z2*a6 + Y1*Y2;
+
+X3 := g1*H1 + g2*H2;
+Y3 := H1*H4 - H2*H3;
+
+
+Y3_inv := Y3 * (1- a1*X2);
+X3_inv := X3 * (1- a1*X2);
+
+// What involves at most one time Px and never involves Pz
+I := Ideal([X2^2, Z2]);
+Ri<Q_x,P_x,Q_z,P_z,a_1,a_2,a_3,a_4,a_6> := R/I;
+
+g1 := Ri!g1;
+g2 := Ri!g2;
+H1 := Ri!H1;
+H2 := Ri!H2;
+H3 := Ri!H3;
+H4 := Ri!H4;
+
+X3 := Ri!X3;
+Y3 := Ri!Y3;
+
+Y3_inv := Ri!Y3_inv;
+X3_inv := Ri!X3_inv;
+
+printf "g1: %o\ng2: %o\nH1: %o\nH2: %o\nH3: %o\nH4: %o\n", g1,g2,H1,H2,H3,H4;
+printf "X3: %o\nY3: %o\nY3_inv: %o\nX3_inv: %o\n", X3,Y3,Y3_inv,X3_inv;
