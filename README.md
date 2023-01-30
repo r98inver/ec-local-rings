@@ -19,7 +19,7 @@ Should you have any question or suggestion, do not hesitate to contact the autho
 - [proof_23.magma](proof_23.magma): verification of conditions (C1), (C2) and (C3) for $p=2,3$;
 - [proof_short.magma](proof_short.magma): verification of conditions (C1), (C2) and (C3) for $5 \leq p \leq 13$, using short weierstrass form; conditions (C2) and (C3) are tested as far as possible also for $p \leq 100$.
 
-### Useful sripts
+### Useful scripts
 
 - [utils.magma](utils.magma): the file containing most of the useful function to work with elliptic curves over $F_q[x]/x^k$, including point addition and multiplication, lifting and others;
 - [quickstart.magma](quickstart.magma): a showcase of usage of the most important functions of `utils.magma`;
