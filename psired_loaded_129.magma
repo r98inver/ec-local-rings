@@ -1,5 +1,5 @@
 R<A, B, n> := PolynomialRing(Rationals(), 3);
-load "psired_stored129.magma";
+load "psired_stored_129.magma";
 print "Psi Loaded";
 psi_stored := [
 	psi1,

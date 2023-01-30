@@ -1,5 +1,4 @@
 load "utils.magma";
-R<a1, a2, a3, a4, a6, n> := PolynomialRing(Rationals(), 6);
 load "psi_loaded_17.magma"; 
 
 // We show that dt \in <psi2(2), psi4(2)> over F_2 and
