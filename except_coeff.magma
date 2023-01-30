@@ -1,0 +1,35 @@
+load "psired_loaded_129.magma";
+
+for p in [5..129] do
+	if not IsPrime(p) then continue; end if;
+	// printf "-----\n%o\n-----\n", p;
+	phi := Evaluate(psi_stored[p], n, p);
+	Rp<A, B, eps> := PolynomialRing(GF(p), 3);
+	k := 2;
+	I := ideal<Rp | eps^k>;
+	Rk<A, B, eps> := Rp/I;
+
+	mp := hom<R -> Rk | A, B, Rk!0>;
+	phi := mp(phi);
+
+	dt := -16*(4*A^3+27*B^2);
+
+	total := p^2;
+	non_anom := 0;
+	except := 0;
+
+	for a in [0..p-1] do
+		for b in [0..p-1] do
+		// Compute the delta
+		if not IsInvertible(Evaluate(dt, [a,b,0])) then continue; end if;
+		non_anom +:= 1;
+		// Compute phi
+		res := Evaluate(phi, [a, b, eps]);
+		if res eq 0 then
+			except +:= 1; 
+		end if;
+		end for;
+	end for;
+	gg := GCD(non_anom, except);
+	printf "p: %o - tot: %o - non anom.: %o - except.: %o - ex/na rate: %o/%o\n", p, total, non_anom, except, except div gg, non_anom div gg;
+end for;
