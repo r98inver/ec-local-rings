@@ -16,7 +16,8 @@ Should you have any question or suggestion, do not hesitate to contact the autho
 - [ind.magma](ind.magma) / [indred.magma](indred.magma): computation of the $\psi_i$ polynomials as described in the paper; the output is stored as loadable magma script in `psi_stored.magma` (resp. `psired_stored.magma`). An example on how to load these polynomials can be found in [psi_loaded_30.magma](psi_loaded_30.magma) and [psired_loaded_222.magma](psired_loaded_222.magma);
 - [except_coeff.magma](except_coeff.magma): comparison between the occurrence of the main case and the exceptional ones for non-anomalous curves and small $p$;
 - [ex1.magma](ex1.magma) / [ex2.magma](ex2.magma): examples of behaviour of the minimum degree of points in the exceptional cases;
-- [proof_23.magma](proof_23.magma): verification of important facts that leads to the solution of all corner cases for $p=2,3$;
+- [proof_23.magma](proof_23.magma): verification of conditions (C1), (C2) and (C3) for $p=2,3$;
+- [proof_short.magma](proof_short.magma): verification of conditions (C1), (C2) and (C3) for $5 \leq p \leq 13$, using short weierstrass form; conditions (C2) and (C3) are tested as far as possible also for $p \leq 100$.
 
 ### Useful sripts
 

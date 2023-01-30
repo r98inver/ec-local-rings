@@ -1,0 +1,74 @@
+load "utils.magma";
+load "psired_loaded_222.magma"; 
+
+// We check conditions (C1), (C2) and (C3)
+// for p <= 13
+
+for p in [5..100] do
+	if not IsPrime(p) then continue; end if; 
+	printf "p: %o\n", p;
+	
+	// Evaluate psi_i(p) in R_k
+	psip_stored := [Evaluate(psi_stored[i], R!n, p) : i in [1..222]]; 
+	Rp<A, B> := PolynomialRing(GF(p), 5);
+	mp := hom< R -> Rp | A, B, Rp!1 >;
+	psip_stored := [mp(x) : x in psip_stored];
+	psip_p := psip_stored[p];
+
+	if p^2 le 222 then
+		// (C1)
+		// Show that A,B \in rad(< psi_p(p), psi_{p^2}(p) >)
+		psip2_p := psip_stored[p^2];
+		I := Ideal([psip_p, psip2_p]);
+		Ir := Radical(I);
+		assert A in Ir;
+		assert B in Ir;
+
+		printf "\t(C1) ok;\n";
+	else 
+		printf "\t(C1) nd;\n";
+	end if;
+
+	I := Ideal([psip_p]);
+	for i in [1..222] do
+		// (C2)
+		if GCD(i, p) eq 1 then
+			assert psip_stored[i] eq 0;
+		// (C3)
+		elif i ne p^2 and GCD(i, p) eq p then
+			assert psip_stored[i] in I;
+		end if;
+	end for;
+	printf "\t(C2) ok;\n";
+	printf "\t(C3) ok;\n";
+
+	/*
+	b2 := a1^2 + 4*a2;
+	b4 := 2*a4 + a1*a3;
+	b6 := a3^2 + 4*a6;
+	b8 := a1^2*a6 + 4*a2*a6 - a1*a3*a4 + a2*a3^2 - a4^2;
+	dt := -b2^2*b8 - 8*b4^3 - 27*b6^2 + 9*b2*b4*b6;
+
+	printf "b2: %o - b4: %o - b6: %o - b8: %o\ndt: %o\n", b2,b4,b6,b8,dt;
+	
+	phi_p :=  // psi_p(p)
+	phi_p2 := psip_stored[p^2]; // psi_p^2(p)
+	printf "psi_%o(%o): %o\npsi_%o(%o): %o\n", p, p, phi_p, p^2, p, phi_p2;
+	I := IdealWithFixedBasis([phi_p, phi_p2]);
+	assert dt in I;
+	printf "Coordinates of dt:\n%o\n", Coordinates(I, dt);
+	print "-------";
+	I := IdealWithFixedBasis([phi_p]);
+	for i in [1..(p^2 - 1)] do
+		if GCD(i, p) eq 1 then
+			// psi_i(p) = 0 for (i,p)=1
+			assert psip_stored[i] eq 0;
+			printf "psi_%o(%o): %o\n", i, p, psip_stored[i];
+		else
+			// psi_np(p) \in (psi_p(p))
+			assert psip_stored[i] in I;
+			printf "psi_%o(%o): %o = (%o)*psi_%o(%o)\n",i,p,psip_stored[i], Coordinates(I, psip_stored[i])[1],p,p;
+		end if;
+	end for;*/
+	
+end for;
