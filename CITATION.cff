@@ -8,8 +8,7 @@ message: >-
   metadata from this file.
 type: software
 authors:
-  - name-suffix: Dr.
-    given-names: Daniele
+  - given-names: Daniele
     family-names: Taufer
     email: daniele.taufer@gmail.com
     affiliation: KU Leuven
