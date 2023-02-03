@@ -1,6 +1,6 @@
-load "psired_loaded_129.magma";
+load "psired_loaded_222.magma";
 
-for p in [5..129] do
+for p in [5..222] do
 	if not IsPrime(p) then continue; end if;
 	// printf "-----\n%o\n-----\n", p;
 	phi := Evaluate(psi_stored[p], n, p);
