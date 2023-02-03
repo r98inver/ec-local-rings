@@ -5,7 +5,7 @@ k := 30; // Nilpotence degree of eps
 R<a1, a2, a3, a4, a6, X> := PolynomialRing(Integers(), 6);
 I := ideal<R | X^k>;
 Rk := R/I;
-load "zfx_stored.magma";
+load "zfx_stored_30.magma";
 F := Rk!F;
 */
 

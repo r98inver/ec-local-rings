@@ -11,6 +11,7 @@ load "utils.magma";
 p := 3;
 k := 20;
 
+
 F<eps> := PolynomialRing(GF(p));
 I := ideal<F | eps^k>;
 Rk<eps> := F/I;
@@ -18,11 +19,17 @@ Rk<eps> := F/I;
 a1 := eps^4; a2 := eps^8; a3 := 0; a4 := 1; a6 := 0;
 E := [Rk | a1,a2,a3,a4,a6];
 
+Sr<X> := PolynomialRing(Rk); // Symbolic ring over Rk
+load "zfx_stored_30.magma";
+Fx := Sr!F; // Z = f(X)
+
 psi3 := a1^2 + a2;
 psi9 := 2*a1^5*a3 + a1^4*a2^2 + a1^4*a4 + a1^3*a2*a3 + a1^2*a2^3 + 2*a1^2*a2*a4 + a1^2*a6 + 2*a1*a2^2*a3 + 2*a1*a3*a4 + a2^2*a4 + a2*a3^2 + a2*a6 + 2*a4^2;
 
 printf "a1: %o - a2: %o - a3: %o - a4: %o - a6: %o\npsi3: %o\npsi9: %o\n", a1,a2,a3,a4,a6,psi3,psi9;
 
+// Some random points
+printf "\n\nRandom Points\n";
 printf "--------\nExample 1\n--------\n";
 // mindeg(P_1) = 4
 // The mindeg of 3P_1 whould be 12+8 = 20, but since k=20 the point has order 3
@@ -54,5 +61,23 @@ P3 := [
 	2*eps^19 + eps^18 + eps^16 + eps^15 + eps^13 + eps^9 + 2*eps^6
 ];
 
-
 printf "P3: %o\n---\n3*P3: %o\n---\n9*P3: %o\n", P3, mul(P3, 3, E), mul(P3, 9, E);
+
+// Trajectories
+
+printf "Trajectories\n-------\n";
+visited := {};
+
+for m in [1..k-1] do
+	trj := {};
+	gm := [eps^m, 1, Evaluate(Fx, eps^m)];
+	
+	while gm ne [0,1,0] do
+		dg := Degree(TrailingTerm(gm[1]));
+		Include(~trj, dg); // Add to the trajectory
+		Include(~visited, dg); // Avoid repetitions
+		gm := mul(gm, 3, E);
+	end while;
+
+	printf "m: %o -> trj: %o\n", m, trj;
+end for;
