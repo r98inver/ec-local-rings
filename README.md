@@ -17,7 +17,8 @@ Should you have any question or suggestion, do not hesitate to contact the autho
 - [except_coeff.magma](except_coeff.magma): comparison between the occurrence of the main case and the exceptional ones for non-anomalous curves and small $p$;
 - [ex1.magma](ex1.magma) / [ex2.magma](ex2.magma): examples of behaviour of the minimum degree of points in the exceptional cases;
 - [proof_23.magma](proof_23.magma): verification of conditions (C1), (C2) and (C3) for $p=2,3$;
-- [proof_short.magma](proof_short.magma): verification of conditions (C1), (C2) and (C3) for $5 \leq p \leq 13$, using short weierstrass form; conditions (C2) and (C3) are tested as far as possible also for $p \leq 100$.
+- [proof_short.magma](proof_short.magma): verification of conditions (C1), (C2) and (C3) for $5 \leq p \leq 13$, using short weierstrass form; conditions (C2) and (C3) are tested as far as possible also for $p \leq 100$;
+- [d_log.magma](d_log.magma): algorithm to break the discrete logarithm over $E^\infty$.
 
 ### Useful scripts
 

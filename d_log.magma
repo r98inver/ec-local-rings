@@ -1,0 +1,162 @@
+// Discrete logarithm for points at infinity
+load "utils.magma";
+
+function d_log(P, Q, E, p)
+	n := 0;
+	S := mul(P, n, E); // Guess point
+	i := 0;
+
+	//printf "P: %o\nQ: %o\n",P, Q;
+	Pi := P; // p^0P
+	while S ne Q do 
+		//printf "i: %o\n-------\nPi: %o\n",i,Pi;
+		assert Pi ne [0,1,0];
+		mi := Degree(TrailingTerm(Pi[1]));
+		dff := add(mul(S, -1, E), Q, E);
+		//cQ := Coefficient(Q[1], mi);
+		//cS := Coefficient(S[1], mi);
+		
+		cD := Coefficient(dff[1], mi);
+		cPi := Coefficient(Pi[1], mi);
+		bi := Integers()!( cD * cPi^-1 ); // Get bi
+		//printf "bi: %o\n", bi;
+		// Update guess
+		n +:= bi * (p^i);
+		S := add(S, mul(Pi, bi, E), E);
+		
+		i +:= 1;
+		Pi := mul(Pi, p, E);
+		//printf "S: %o\nQ: %o\n",S, Q;
+		//Q;
+	end while;
+
+	return n;
+
+end function;
+
+
+function d_log_old(P, Q, E, p)
+	n := 1;
+	guess := P;
+
+	while guess ne Q do 
+		// Get the lowest degree where dey differ
+		dff := Q[1] - guess[1]; // now p^ib_i P + guess = Q in that degree
+		last_dff := TrailingTerm(dff);
+		vD := Degree(last_dff);
+
+		moving_P := P;
+		last_P := TrailingTerm(moving_P[1]);
+		vP := Degree(last_P);
+
+		p_mul := 1;
+		while vP ne vD do 
+			//printf "vP: %o - vQ: %o\n", vP, vQ;
+			p_mul *:= p;
+			moving_P := mul(moving_P, p, E);
+			// printf "Multiplied P: %o\n", P;
+			assert moving_P ne [0, 1, 0]; 
+			last_P := TrailingTerm(moving_P[1]);
+			vP := Degree(last_P);
+		end while;
+
+		cP := Coefficient(last_P, vD);
+		cD := Coefficient(last_dff, vD);
+
+		n +:= p_mul * Integers()!(cD * (cP^-1));
+		guess := mul(P, n, E);
+
+	end while;
+	return n;
+
+
+	last_P := TrailingTerm(P[1]);
+	last_Q := TrailingTerm(Q[1]);
+
+	vP := Degree(last_P);
+	vQ := Degree(last_Q);
+
+	
+
+
+	// First step: equate degrees
+	p_mul := 1;
+	while vP ne vQ do 
+		printf "vP: %o - vQ: %o\n", vP, vQ;
+		p_mul *:= p;
+		P := mul(P, p, E);
+		// printf "Multiplied P: %o\n", P;
+		assert P ne [0, 1, 0]; 
+		last_P := TrailingTerm(P[1]);
+		vP := Degree(last_P);
+	end while;
+
+	// Second step: divide coefficients
+	// printf "lastP: %o\nlastQ: %o\n", last_P, last_Q;
+
+	cP := Coefficient(last_P, vQ);
+	cQ := Coefficient(last_Q, vQ);
+
+	n := p_mul * Integers()!(cQ * (cP^-1));
+	if mul(P, n, E) eq Q then return n;	
+	else return n + p_mul*d_log(P, mul(Q, n-1, E), E, p);
+	end if;
+
+end function;
+
+
+for p in [2..11] do
+	if not IsPrime(p) then continue; end if;
+	printf "p: %o... ",p; 
+	// Define the parameters: R_k = F_{p^e}[X]/<X^k>
+	k := p^2+2; e := 2; 
+	// Construct R_k
+	q := p^e;
+
+	Fq<gamma> := GF(q); // gamma is the primitive element of Fq
+	F<eps> := PolynomialRing(Fq);
+	I := ideal<F | eps^k>;
+	Rk<eps> := F/I;
+	
+	for crv in [1..10] do // 10 random curves
+		E := RandomCurve(Rk); 
+		
+		for pnt in [1..30] do // 30 random points for each curve
+			// Points over O
+			P := [Rk | 0, 1, 0];
+			while P eq [0,1,0] do
+				P := RandomLift(P, E, k);
+			end while;
+			
+			// Check order of p
+			ordp := 1;
+			nP := P;
+			while nP ne [0,1,0] do 
+				nP := mul(nP, p, E);
+				ordp *:= p;
+			end while;
+
+			n := Random([1..ordp-1]);
+			Q := mul(P, n, E);
+
+			// Now discrete log
+			dlog := d_log(P, Q, E, p);
+			
+			assert dlog eq n; 
+		end for;
+	end for;
+	printf "ok\n";
+
+end for;
+
+
+
+
+
+
+
+
+
+
+
+

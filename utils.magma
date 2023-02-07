@@ -113,7 +113,8 @@ end function;
 
 function mul(P, n, E)
 	// Simple double and add
-	Q := [0,1,0];
+	Rk := Parent(P[1]);
+	Q := [Rk | 0,1,0];
 	negative := false;
 	if n lt 0 then
 		n := -n;
