@@ -1,6 +1,6 @@
 # Elliptic Curves over local rings $F_q[x]/x^k$
 
-In this repository you can find scripts and computations for [our paper]( 	
+In this repository you can find scripts and computations for our paper [Multiplication polynomials for elliptic curves over finite local rings]( 	
 https://doi.org/10.48550/arXiv.2302.03650). For a quick introduction to the code look at [quickstart.magma](quickstart.magma). A more detailed description of the repository can be find below.   
 Should you have any question or suggestion, do not hesitate to contact the authors:
 - Daniele Taufer: name.surname@gmail.com
