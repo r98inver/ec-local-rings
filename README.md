@@ -4,7 +4,7 @@ In this repository you can find scripts and computations for our paper [Multipli
 https://doi.org/10.48550/arXiv.2302.03650). For a quick introduction to the code look at [quickstart.magma](quickstart.magma). A more detailed description of the repository can be find below.   
 Should you have any question or suggestion, do not hesitate to contact the authors:
 - Daniele Taufer: name.surname@gmail.com
-- Riccardo Invernizzi: name.surname@student.kuleuven.be
+- Riccardo Invernizzi: name.surname@kuleuven.be
 
 **Sections:**
 - [Paper Computations](https://github.com/r98inver/ec-local-rings#paper-computations): the scripts used in the paper, along with their results, are briefly presented;
